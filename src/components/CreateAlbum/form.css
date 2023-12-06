@@ -1,0 +1,48 @@
+.create-album {
+  width: 50%;
+  margin: 35px auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 8px 0 rgba(99, 99, 99, 0.2);
+  border-radius: 15px;
+}
+.create-album span {
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+.create-album form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 15px;
+}
+.create-album form input {
+  width: 65%;
+  height: 55px;
+  padding-left: 15px;
+  outline: none;
+  border: none;
+  border-radius: 20px;
+}
+.create-album form input:focus {
+  border: 2px solid #07f;
+}
+.create-album form input::placeholder {
+  font-size: 18px;
+}
+.create-album form button {
+  width: 15%;
+  height: 45px;
+  font-size: 20px;
+  font-weight: 500;
+  color: white;
+  border: none;
+  border-radius: 15px;
+}
+.clear {
+  background-color: #ff1300;
+}
+.create {
+  background-color: #07f;
+}

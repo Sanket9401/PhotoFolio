@@ -1,11 +1,19 @@
-import { useState } from "react";
+// import { useState } from "react";
 import "./albumList.css";
 import albumLogo from "../../assets/album.png";
 import Images from "../Images/images.js";
+import Spinner from "react-spinner-material";
 
 export default function AlbumList(props) {
-  const { openForm, setOpenForm, albums, openImages, setOpenImages } = props;
-
+  const {
+    openForm,
+    setOpenForm,
+    albums,
+    openImages,
+    setOpenImages,
+    loadingData,
+  } = props;
+  console.log(albums);
   return (
     <>
       {openImages ? (
@@ -21,6 +29,12 @@ export default function AlbumList(props) {
               {openForm ? "Cancel" : "Add Album"}
             </button>
           </div>
+          <Spinner
+            radius={120}
+            color={"#333"}
+            stroke={2}
+            visible={loadingData}
+          />
           <div className="album-list-container">
             {albums.map((item, i) => (
               <div
@@ -31,7 +45,7 @@ export default function AlbumList(props) {
                 <div className="album-img">
                   <img src={albumLogo} alt="Album" />
                 </div>
-                <span>{item}</span>
+                <span>{item.name}</span>
               </div>
             ))}
           </div>

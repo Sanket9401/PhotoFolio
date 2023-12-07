@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import "./images.css";
 import backLogo from "../../assets/back.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ImagesList from "./imagesList";
 
 export default function Images(props) {
-  const { Images, setOpenImages } = props;
+  const { setOpenImages } = props;
   const [openForm, setOpenForm] = useState(false);
   const [formData, setFormData] = useState({ title: "", url: "" });
   const inputTitleRef = useRef();
@@ -14,7 +15,7 @@ export default function Images(props) {
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
-      setFormData({ title: formData.title, url: formData.url });
+      // setFormData({ title: formData.title, url: formData.url });
       toast.success("Image added successfully !", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -29,10 +30,6 @@ export default function Images(props) {
       inputTitleRef.current.focus();
     }
   };
-
-  //   useEffect(() => {
-  //     inputTitleRef.current.focus();
-  //   }, [openForm]);
 
   return (
     <>
@@ -96,6 +93,7 @@ export default function Images(props) {
           </div>
         </>
       ) : null}
+      <ImagesList />
     </>
   );
 }

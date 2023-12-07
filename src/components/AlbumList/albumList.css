@@ -45,6 +45,7 @@
   background-color: #eeeeee;
   border-radius: 12px 12px 0px 0px;
   transition: 0.2s;
+  cursor: pointer;
 }
 .album:hover {
   background-color: #07f;

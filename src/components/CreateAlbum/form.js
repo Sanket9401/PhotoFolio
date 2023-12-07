@@ -2,6 +2,8 @@ import "./form.css";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { db } from "../../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 export default function CreateAlbum(props) {
   const { albums, setAlbums } = props;
@@ -11,7 +13,17 @@ export default function CreateAlbum(props) {
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
-      setAlbums([...albums, albumName]);
+      // setAlbums([...albums, albumName]);
+      const docRef = doc(collection(db, "albums"));
+      await setDoc(docRef, {
+        name: albumName,
+        images: [
+          {
+            title: "",
+            url: "",
+          },
+        ],
+      });
       toast.success("Album added successfully !", {
         position: toast.POSITION.TOP_RIGHT,
       });

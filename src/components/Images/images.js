@@ -1,21 +1,39 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./images.css";
 import backLogo from "../../assets/back.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImagesList from "./imagesList";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import searchLogo from "../../assets/search.png";
 
 export default function Images(props) {
-  const { setOpenImages } = props;
-  const [openForm, setOpenForm] = useState(false);
-  const [formData, setFormData] = useState({ title: "", url: "" });
-  const inputTitleRef = useRef();
+  const { setOpenImages, activeAlbum, setActiveAlbum, setAlbums, isImgAdded } =
+    props;
+  const [openForm, setOpenForm] = useState(false); //for opening add image form
+  const [formData, setFormData] = useState({ title: "", url: "" }); //storing data of new image
+  const inputTitleRef = useRef(); //hooks for handling the input data
   const inputUrlRef = useRef();
 
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
-      // setFormData({ title: formData.title, url: formData.url });
+      
+      // adding the doc to add the new image title and url using updateDoc
+      const docRef = doc(db, "albums", activeAlbum.id);
+
+      await updateDoc(docRef, {
+        images: [...activeAlbum.images, formData],
+        name: activeAlbum.name,
+      });
+      setActiveAlbum({
+        images: [...activeAlbum.images, formData],
+        name: activeAlbum.name,
+      });
+      setOpenForm(!openForm);
+
+      // toast message
       toast.success("Image added successfully !", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -31,6 +49,15 @@ export default function Images(props) {
     }
   };
 
+  useEffect(() => {
+    // for editing the existing image data
+    let temp = localStorage.getItem("image");
+    console.log(temp.title);
+    if (temp) {
+      setFormData(temp);
+    }
+  }, [openForm]);
+
   return (
     <>
       <ToastContainer />
@@ -38,13 +65,29 @@ export default function Images(props) {
         <span onClick={() => setOpenImages(false)}>
           <img src={backLogo} alt="Back" />
         </span>
-        <h3>No Images Found</h3>
-        <button
-          className={openForm ? "cancel" : "add"}
-          onClick={() => setOpenForm(!openForm)}
+        <h3>
+          {activeAlbum.images.length === 0
+            ? "No Images Found"
+            : `Images in ${activeAlbum.name}`}
+        </h3>
+        <div
+          style={{
+            width: "25%",
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+          }}
         >
-          {openForm ? "Cancel" : "Add image"}
-        </button>
+          <span onClick={() => {}}>
+            <img src={searchLogo} alt="Search" />
+          </span>
+          <button
+            className={openForm ? "cancel" : "add"}
+            onClick={() => setOpenForm(!openForm)} // adding classes and text using conditional rendering
+          >
+            {openForm ? "Cancel" : "Add image"}
+          </button>
+        </div>
       </div>
 
       {openForm ? (
@@ -70,7 +113,7 @@ export default function Images(props) {
                 onChange={(e) => {
                   setFormData({
                     ...formData,
-                    title: inputUrlRef.current.value,
+                    url: inputUrlRef.current.value,
                   });
                 }}
               />
@@ -93,7 +136,11 @@ export default function Images(props) {
           </div>
         </>
       ) : null}
-      <ImagesList />
+      <ImagesList
+        activeAlbum={activeAlbum}
+        setOpenForm={setOpenForm}
+        openForm={openForm}
+      />
     </>
   );
 }

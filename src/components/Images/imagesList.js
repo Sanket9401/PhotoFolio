@@ -2,28 +2,37 @@ import "./images.css";
 import editLogo from "../../assets/edit.png";
 import deleteLogo from "../../assets/bin.png";
 import { useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 export default function ImagesList(props) {
-  const [isActive, setIsActive] = useState(false);
-  const data = [
-    {
-      title: "Hindi",
-      url: "https://play-lh.googleusercontent.com/QVLPlvZDkK4H_LDapOXIah0WR6pvm1pkmMVX2E7cE0sZ_7-v0ki4RWLJy44AZd2VxKM",
-    },
-    {
-      title: "Marathi",
-      url: "https://yt3.googleusercontent.com/WvmN58YKEIghgbJ6feEUluRrNhsYla8-mkI-s-7L2rOxsWlAzsityy06ShJb88z8_sKH4KBV=s900-c-k-c0x00ffffff-no-rj",
-    },
-    {
-      title: "English",
-      url: "https://t4.ftcdn.net/jpg/01/06/47/61/360_F_106476142_zMZkkTkhMeq0DIjV20oJI00e3QXLYIGN.jpg",
-    },
-  ];
+  const { activeAlbum, setOpenForm, openForm } = props;
+  const [isActive, setIsActive] = useState(false); //for showing edit, delete icons on hover
+  const [imagesList, setImageList] = useState(activeAlbum.images); //storing respective album's images list
 
-  // const ()
+  const handleDelete = async (id) => {
+    const temp = imagesList.filter((item, i) => {
+      return id !== i;
+    });
+
+    // deleting the image using id
+    const docRef = doc(db, "albums", activeAlbum.id);
+
+    await updateDoc(docRef, {
+      images: temp,
+      name: activeAlbum.name,
+    });
+    setImageList(temp);
+  };
+
+  const handleEdit = async (item) => {
+    setOpenForm(!openForm);
+    localStorage.setItem("image", { title: item.title, url: item.url });
+  };
+
   return (
     <div className="img-list">
-      {data.map((item, i) => (
+      {imagesList?.map((item, i) => (
         <div
           className="img-item"
           key={i}
@@ -40,11 +49,17 @@ export default function ImagesList(props) {
             src={editLogo}
             className={isActive ? "edit" : "hide"}
             alt="Edit"
+            onClick={() => {
+              handleEdit(item);
+            }}
           />
           <img
             src={deleteLogo}
-            className={isActive ? "delete" : "hide"}
+            className={isActive ? "delete" : "hide"} //adding classnames using conditional rendering
             alt="Delete"
+            onClick={() => {
+              handleDelete(i);
+            }}
           />
         </div>
       ))}

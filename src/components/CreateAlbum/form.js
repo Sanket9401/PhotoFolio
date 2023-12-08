@@ -6,23 +6,18 @@ import { db } from "../../firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 
 export default function CreateAlbum(props) {
-  const { albums, setAlbums } = props;
-  const [albumName, setAlbumName] = useState("");
-  const inputRef = useRef();
+  const [albumName, setAlbumName] = useState(""); //for album name
+  const inputRef = useRef(); 
 
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
-      // setAlbums([...albums, albumName]);
+
+      // adding doc to database with albumName and empty images array 
       const docRef = doc(collection(db, "albums"));
       await setDoc(docRef, {
         name: albumName,
-        images: [
-          {
-            title: "",
-            url: "",
-          },
-        ],
+        images: [],
       });
       toast.success("Album added successfully !", {
         position: toast.POSITION.TOP_RIGHT,
@@ -40,6 +35,8 @@ export default function CreateAlbum(props) {
   useEffect(() => {
     inputRef.current.focus();
   }, []);
+
+  
 
   return (
     <>

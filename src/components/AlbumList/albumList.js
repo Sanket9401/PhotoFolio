@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useState } from "react";
 import "./albumList.css";
 import albumLogo from "../../assets/album.png";
 import Images from "../Images/images.js";
@@ -9,15 +9,25 @@ export default function AlbumList(props) {
     openForm,
     setOpenForm,
     albums,
+    setAlbums,
     openImages,
     setOpenImages,
-    loadingData,
+    isImgAdded,
   } = props;
-  console.log(albums);
+  const [activeAlbum, setActiveAlbum] = useState(); // for storing selected album's data
+
+
+  // conditional rendering for opening respective images folder of selected album 
   return (
     <>
       {openImages ? (
-        <Images setOpenImages={setOpenImages} />
+        <Images
+          setOpenImages={setOpenImages}
+          activeAlbum={activeAlbum}
+          setActiveAlbum={setActiveAlbum}
+          setAlbums={setAlbums}
+          isImgAdded={isImgAdded}
+        />
       ) : (
         <>
           <div className="album-list-top">
@@ -29,18 +39,15 @@ export default function AlbumList(props) {
               {openForm ? "Cancel" : "Add Album"}
             </button>
           </div>
-          <Spinner
-            radius={120}
-            color={"#333"}
-            stroke={2}
-            visible={loadingData}
-          />
           <div className="album-list-container">
             {albums.map((item, i) => (
               <div
                 className="album"
                 key={i}
-                onClick={() => setOpenImages(true)}
+                onClick={() => {
+                  setActiveAlbum(item); //stored selected album's data
+                  setOpenImages(true); //open images folder
+                }}
               >
                 <div className="album-img">
                   <img src={albumLogo} alt="Album" />
